@@ -485,11 +485,11 @@ public class GamePanel extends JPanel implements Runnable
             
             double tempu = u1;
             u1 = u2;
-            u2 = temp;
+            u2 = tempu;
             
             double tempv = v1;
             v1 = v2;
-            v2 = temp;
+            v2 = tempv;
         }
         
         if(y3 < y1)
@@ -504,11 +504,11 @@ public class GamePanel extends JPanel implements Runnable
             
             double tempu = u1;
             u1 = u3;
-            u3 = temp;
+            u3 = tempu;
             
             double tempv = v1;
             v1 = v3;
-            v3 = temp;
+            v3 = tempv;
         }
         
         if(y3 < y2)
@@ -523,11 +523,11 @@ public class GamePanel extends JPanel implements Runnable
             
             double tempu = u2;
             u2 = u3;
-            u3 = temp;
+            u3 = tempu;
             
             double tempv = v2;
             v2 = v3;
-            v3 = temp;
+            v3 = tempv;
         }
         
         int dy1 = y2 - y1;
@@ -544,18 +544,18 @@ public class GamePanel extends JPanel implements Runnable
         
         double dax_step = 0, dbx_step = 0, du1_step = 0, dv1_step = 0, du2_step = 0, dv2_step = 0;
         
-         if (dy1 != 0) dax_step = dx1 / Math.abs(dy1);
-         if (dy2 != 0) dbx_step = dx2 / Math.abs(dy2);
+         if (dy1 != 0) dax_step = dx1 / (float)Math.abs(dy1);
+         if (dy2 != 0) dbx_step = dx2 / (float)Math.abs(dy2);
 
-	 if (dy1 != 0) du1_step = du1 / Math.abs(dy1);
-	 if (dy1 != 0) dv1_step = dv1 / Math.abs(dy1);
+	 if (dy1 != 0) du1_step = du1 / (float)Math.abs(dy1);
+	 if (dy1 != 0) dv1_step = dv1 / (float)Math.abs(dy1);
  
-	 if (dy2 != 0) du2_step = du2 / Math.abs(dy2);
-	 if (dy2 != 0) dv2_step = dv2 / Math.abs(dy2);
+	 if (dy2 != 0) du2_step = du2 / (float)Math.abs(dy2);
+	 if (dy2 != 0) dv2_step = dv2 / (float)Math.abs(dy2);
          
          if(dy1 != 0)
          {
-             for(int i = y1; i < y2; i++)
+             for(int i = y1; i <= y2; i++)
              {
                  int ax = (int)(x1 + (double)(i - y1) * dax_step);
 		 int bx = (int)(x1 + (double)(i - y1) * dbx_step);
@@ -570,15 +570,15 @@ public class GamePanel extends JPanel implements Runnable
                  {
                      int temp = ax;
                      ax = bx;
-                     bx = ax;
+                     bx = temp;
                      
                      double temps = tex_su;
                      tex_su = tex_eu;
-                     tex_eu = temp;
+                     tex_eu = temps;
                      
                      double tempv = tex_sv;
                      tex_sv = tex_ev;
-                     tex_ev = temp;
+                     tex_ev = tempv;
                  }
                  
                  tex_u = tex_su;
@@ -592,14 +592,18 @@ public class GamePanel extends JPanel implements Runnable
                      tex_u = (1.0 - t) * tex_su + t * tex_eu;
                      tex_v = (1.0 - t) * tex_sv + t * tex_ev;
                      
-                     int pixel = (int)((tex_v*pixels.length/12000)*400+(tex_u*400))*3;
+                     int pixel = (int)((tex_v*pixels.length/1200)*400+(tex_u*400))*3;
                      
+                     if (pixel>pixels.length-3) {
+                        pixel=pixels.length-3;
+                     }
+
                      int red = pixels[pixel+0];
                      int green = pixels[pixel+1];
                      int blue = pixels[pixel+2];
                      
                      g2.setColor(new Color(red, green, blue));
-                     g2.drawLine(j, i, 1, 1);
+                     g2.drawLine(j, i, j+1, i+1);
                      
                      t += tstep;
                  }
@@ -612,17 +616,17 @@ public class GamePanel extends JPanel implements Runnable
              dv1 = v3 - v2;
              du1 = u3 - u2;
              
-             if (dy1 != 0) dax_step = dx1 / Math.abs(dy1);
-	     if (dy2 != 0) dbx_step = dx2 / Math.abs(dy2);
+             if (dy1 != 0) dax_step = dx1 / (float)Math.abs(dy1);
+	     if (dy2 != 0) dbx_step = dx2 / (float)Math.abs(dy2);
 
              du1_step = 0; dv1_step = 0;
              
-             if (dy1 != 0) du1_step = du1 / Math.abs(dy1);
-             if (dy1 != 0) dv1_step = dv1 / Math.abs(dy1);
+             if (dy1 != 0) du1_step = du1 / (float)Math.abs(dy1);
+             if (dy1 != 0) dv1_step = dv1 / (float)Math.abs(dy1);
              
              if(dy1 != 0)
          {
-             for(int i = y2; i < y3; i++)
+             for(int i = y2; i <= y3; i++)
              {
                  int ax = (int)(x2 + (double)(i - y2) * dax_step);
 		 int bx = (int)(x1 + (double)(i - y1) * dbx_step);
@@ -637,15 +641,15 @@ public class GamePanel extends JPanel implements Runnable
                  {
                      int temp = ax;
                      ax = bx;
-                     bx = ax;
+                     bx = temp;
                      
                      double temps = tex_su;
                      tex_su = tex_eu;
-                     tex_eu = temp;
+                     tex_eu = temps;
                      
                      double tempv = tex_sv;
                      tex_sv = tex_ev;
-                     tex_ev = temp;
+                     tex_ev = tempv;
                  }
                  
                  tex_u = tex_su;
@@ -659,14 +663,18 @@ public class GamePanel extends JPanel implements Runnable
                      tex_u = (1.0 - t) * tex_su + t * tex_eu;
                      tex_v = (1.0 - t) * tex_sv + t * tex_ev;
                      
-                     int pixel = (int)((tex_v*pixels.length/12000)*400+(tex_u*400))*3;
+                     int pixel = (int)((tex_v*pixels.length/1200)*400+(tex_u*400))*3;
+
+                     if (pixel>pixels.length-3) {
+                        pixel=pixels.length-3;
+                     }
 
                      int red = pixels[pixel+0];
                      int green = pixels[pixel+1];
                      int blue = pixels[pixel+2];
                      
                      g2.setColor(new Color(red, green, blue));
-                     g2.drawLine(j, i, 1, 1);
+                     g2.drawLine(j, i, j+1, i+1);
                      
                      t += tstep;
                  }
