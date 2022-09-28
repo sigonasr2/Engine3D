@@ -177,7 +177,7 @@ public class GamePanel extends JPanel implements Runnable
         meshCube = new Mesh(Arrays.asList(
                 new Triangle[]{
                     //SOUTH
-                    new Triangle(new Vec3D(0,0,0,1), new Vec3D(0,1,0,1), new Vec3D(1,1,0,1), new Vec2D(0,1), new Vec2D(0,0), new Vec2D(1,0)),
+                    new Triangle(new Vec3D(0,0,0,1), new Vec3D(0,1,0,1), new Vec3D(1,1,0,1), new Vec2D(0,0), new Vec2D(0,1), new Vec2D(1,1)),
                     new Triangle(new Vec3D(0,0,0,1), new Vec3D(1,1,0,1), new Vec3D(1,0,0,1), new Vec2D(0,0), new Vec2D(1,1), new Vec2D(1,0)),
                     //EAST
                     new Triangle(new Vec3D(1,0,0,1), new Vec3D(1,1,0,1), new Vec3D(1,1,1,1), new Vec2D(0,1), new Vec2D(0,0), new Vec2D(1,0)),
