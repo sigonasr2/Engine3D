@@ -13,6 +13,7 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.geom.Line2D;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,6 +21,9 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
+import java.awt.image.BufferedImage;
+
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 
@@ -58,7 +62,7 @@ public class GamePanel extends JPanel implements Runnable
     //DETERMINES WHERE THE PLAYER IS FACING
     double fYaw;
     
-    int[] pixels = new int[477601];
+    BufferedImage img;
     
     public GamePanel()
     {
@@ -77,25 +81,9 @@ public class GamePanel extends JPanel implements Runnable
     
      public void getRGB()
     {
-        try
-        {
-            File file = new File("cobble.txt");
-            
-            Scanner scan = new Scanner(file);
-            
-            int i = 0;
-            
-            while(scan.hasNextLine())
-            {
-                pixels[i] = scan.nextInt();
-                
-                i++;
-            }
-            
-            scan.close();
-        }
-        catch(Exception e)
-        {
+        try {
+            img = ImageIO.read(new File("cobble.png"));
+        } catch (IOException e) {
             e.printStackTrace();
         }
    
@@ -190,7 +178,7 @@ public class GamePanel extends JPanel implements Runnable
                 new Triangle[]{
                     //SOUTH
                     new Triangle(new Vec3D(0,0,0,1), new Vec3D(0,1,0,1), new Vec3D(1,1,0,1), new Vec2D(0,1), new Vec2D(0,0), new Vec2D(1,0)),
-                    new Triangle(new Vec3D(0,0,0,1), new Vec3D(1,1,0,1), new Vec3D(1,0,0,1), new Vec2D(0,1), new Vec2D(0,0), new Vec2D(1,0)),
+                    new Triangle(new Vec3D(0,0,0,1), new Vec3D(1,1,0,1), new Vec3D(1,0,0,1), new Vec2D(0,0), new Vec2D(1,1), new Vec2D(1,0)),
                     //EAST
                     new Triangle(new Vec3D(1,0,0,1), new Vec3D(1,1,0,1), new Vec3D(1,1,1,1), new Vec2D(0,1), new Vec2D(0,0), new Vec2D(1,0)),
                     new Triangle(new Vec3D(1,0,0,1), new Vec3D(1,1,1,1), new Vec3D(1,0,1,1), new Vec2D(0,1), new Vec2D(0,0), new Vec2D(1,0)),
@@ -439,7 +427,7 @@ public class GamePanel extends JPanel implements Runnable
             for(Triangle tt: listTriangles)
             {
                 texturedTriangle(g2, (int)tt.vec3d.x,(int)tt.vec3d.y, tt.vec2d.u, tt.vec2d.v,(int)tt.vec3d2.x,(int)tt.vec3d2.y,
-                tt.vec2d2.u, tt.vec2d2.v,(int)tt.vec3d3.x,(int)tt.vec3d3.y, tt.vec2d3.u, tt.vec2d3.v, pixels);
+                tt.vec2d2.u, tt.vec2d2.v,(int)tt.vec3d3.x,(int)tt.vec3d3.y, tt.vec2d3.u, tt.vec2d3.v, img);
 
                 g2.setColor(Color.white); 
                 drawTriangle(g2, tt.vec3d.x, tt.vec3d.y, tt.vec3d2.x,
@@ -471,7 +459,7 @@ public class GamePanel extends JPanel implements Runnable
     }
     
     public void texturedTriangle(Graphics2D g2, int x1, int y1, double u1, double v1, int x2, int y2, double
-    u2, double v2, int x3, int y3, double u3, double v3, int[] pixels)
+    u2, double v2, int x3, int y3, double u3, double v3, BufferedImage img)
     {
         if(y2 < y1)
         {
@@ -592,17 +580,12 @@ public class GamePanel extends JPanel implements Runnable
                      tex_u = (1.0 - t) * tex_su + t * tex_eu;
                      tex_v = (1.0 - t) * tex_sv + t * tex_ev;
                      
-                     int pixel = (int)((tex_v*pixels.length/1200)*400+(tex_u*400))*3;
-                     
-                     if (pixel>pixels.length-3) {
-                        pixel=pixels.length-3;
-                     }
-
-                     int red = pixels[pixel+0];
-                     int green = pixels[pixel+1];
-                     int blue = pixels[pixel+2];
-                     
-                     g2.setColor(new Color(red, green, blue));
+                     g2.setColor(new Color(
+                        img.getRGB(
+                          (int)Math.max(0,tex_u*(img.getWidth()-1)),
+                          (int)Math.max(0,tex_v*(img.getHeight()-1))
+                        )
+                      ));
                      g2.drawLine(j, i, j+1, i+1);
                      
                      t += tstep;
@@ -662,18 +645,12 @@ public class GamePanel extends JPanel implements Runnable
                  {
                      tex_u = (1.0 - t) * tex_su + t * tex_eu;
                      tex_v = (1.0 - t) * tex_sv + t * tex_ev;
-                     
-                     int pixel = (int)((tex_v*pixels.length/1200)*400+(tex_u*400))*3;
-
-                     if (pixel>pixels.length-3) {
-                        pixel=pixels.length-3;
-                     }
-
-                     int red = pixels[pixel+0];
-                     int green = pixels[pixel+1];
-                     int blue = pixels[pixel+2];
-                     
-                     g2.setColor(new Color(red, green, blue));
+                     g2.setColor(new Color(
+                        img.getRGB(
+                          (int)Math.max(0,tex_u*(img.getWidth()-1)),
+                          (int)Math.max(0,tex_v*(img.getHeight()-1))
+                        )
+                      ));
                      g2.drawLine(j, i, j+1, i+1);
                      
                      t += tstep;
